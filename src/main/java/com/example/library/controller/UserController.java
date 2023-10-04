@@ -1,6 +1,9 @@
 package com.example.library.controller;
 
+import com.example.library.configuration.security.jwt.JWTTokenProvider;
+import com.example.library.dto.AuthUserDto;
 import com.example.library.dto.UserDto;
+import com.example.library.entity.user.User;
 import com.example.library.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +22,20 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final JWTTokenProvider jwtTokenProvider;
 
     @PostMapping()
     public ResponseEntity<UserDto> registration(@RequestBody UserDto userDto,
                                         BindingResult bindingResult) {
         checkBindingResult(bindingResult);
         return ok(INSTANCE.userToDto(userService.save(INSTANCE.dtoToUser(userDto))));
+    }
+
+    @PostMapping("/auth")
+    public ResponseEntity<String> authorization(@RequestBody AuthUserDto userDto,
+                                BindingResult bindingResult){
+        checkBindingResult(bindingResult);
+        User user = userService.login(INSTANCE.authDtoToUser(userDto));
+        return ok(jwtTokenProvider.generateToken(user.getUsername(), user.getRoles()));
     }
 }

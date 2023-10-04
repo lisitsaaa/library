@@ -33,6 +33,14 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
+    public User login(User user){
+        User userFromBase = findByUsername(user.getUsername());
+        if (passwordEncoder().matches(user.getPassword(), userFromBase.getPassword())) {
+            return userFromBase;
+        }
+        throw new RuntimeException("User not found");
+    }
+
     @Transactional(readOnly = true)
     public User findByUsername(String username){
         return checkUser(userRepository.findByUsername(username));
@@ -49,7 +57,7 @@ public class UserService implements UserDetailsService {
 
     private User checkUser(Optional<User> user){
         if (user.isEmpty()) {
-            throw new RuntimeException(String.format("User @%s not found", user.get().getUsername()));
+            throw new RuntimeException("User @%s not found");
         }
         return user.get();
     }
