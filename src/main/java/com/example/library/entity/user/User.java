@@ -17,17 +17,12 @@ public class User extends AbstractEntity implements UserDetails {
     private String name;
     private String surname;
     private String parentName;
-    private String email;
+    private String username;
     private String password;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(value = EnumType.STRING)
     private Set<Role> roles;
-
-    @Override
-    public String getUsername() {
-        return email;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
