@@ -1,10 +1,13 @@
 package com.example.library.service;
 
 import com.example.library.entity.library.book.Book;
+import com.example.library.exception.NotFoundException;
 import com.example.library.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +15,9 @@ import java.util.Optional;
 @Service
 @Transactional
 public class BookService {
+    @Value("Not found")
+    private String NOT_FOUND_MESSAGE;
+
     @Autowired
     private BookRepository bookRepository;
 
@@ -32,6 +38,11 @@ public class BookService {
     }
 
     @Transactional(readOnly = true)
+    public List<Book> findAllInsideBooks(){
+        return checkForPresenceOfBooks(bookRepository.findAllByBookStatusOutside());
+    }
+
+    @Transactional(readOnly = true)
     public Book findById(long id) {
         return checkForPresenceOfBook(bookRepository.findById(id));
     }
@@ -43,9 +54,12 @@ public class BookService {
 
     @Transactional(readOnly = true)
     public List<Book> findAll() {
-        List<Book> books = bookRepository.findAll();
-        if (books.isEmpty()) {
-            throw new RuntimeException("");
+        return checkForPresenceOfBooks(bookRepository.findAll());
+    }
+
+    private List<Book> checkForPresenceOfBooks(List<Book> books){
+        if (CollectionUtils.isEmpty(books)) {
+            throw new NotFoundException(NOT_FOUND_MESSAGE);
         }
         return books;
     }
@@ -54,6 +68,6 @@ public class BookService {
         if (book.isPresent()) {
             return book.get();
         }
-        throw new RuntimeException("not found");
+        throw new NotFoundException(NOT_FOUND_MESSAGE);
     }
 }
