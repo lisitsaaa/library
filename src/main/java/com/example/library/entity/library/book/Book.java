@@ -15,7 +15,7 @@ public class Book extends AbstractEntity {
     private String title;
     private String description;
 
-    @ManyToMany
+    @OneToMany
     private List<Author> authors;
 
     @ElementCollection(fetch = FetchType.EAGER)
