@@ -19,6 +19,9 @@ public class AuthorService {
                 .findByNameAndSurnameAndParentName(author.getName(),
                         author.getSurname(),
                         author.getParentName());
-        return authorByDB.orElseGet(() -> authorRepository.save(author));
+        if (authorByDB.isEmpty()) {
+            return authorRepository.save(author);
+        }
+        return authorByDB.get();
     }
 }

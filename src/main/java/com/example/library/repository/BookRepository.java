@@ -8,14 +8,18 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
     Optional<Book> findByISBN(String isbn);
 
+    @Query("SELECT b FROM Book b where b.bookStatus='INSIDE'")
+    List<Book> findAllByBookStatusInside();
+
     @Modifying
-    @Query("update Book b set b.bookStatus=:bookStatus where b.id=:id")
+    @Query("UPDATE Book b SET b.bookStatus=:bookStatus WHERE b.id=:id")
     void updateBookStatus(@Param("bookStatus") BookStatus bookStatus,
                           @Param("id") long id);
 }

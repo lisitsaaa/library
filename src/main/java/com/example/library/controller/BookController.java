@@ -54,6 +54,13 @@ public class BookController {
         return ok(books);
     }
 
+    @GetMapping("/inside")
+    public ResponseEntity<List<BookDto>> getInsideBook(){
+        List<BookDto> books = new ArrayList<>();
+        bookService.findInsideBooks().forEach(book -> books.add(INSTANCE.bookToDto(book)));
+        return ok(books);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<BookDto> updateInfo(@RequestBody @Valid UpdatedBookDto bookDto,
                                           BindingResult bindingResult,
