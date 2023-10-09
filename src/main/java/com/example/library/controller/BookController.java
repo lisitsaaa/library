@@ -9,6 +9,7 @@ import com.example.library.entity.library.book.Book;
 import com.example.library.service.AuthorService;
 import com.example.library.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
@@ -61,10 +62,12 @@ public class BookController {
         return ok(books);
     }
 
-    @GetMapping("/pagination/{pageIndex}")
-    public ResponseEntity<List<BookDto>> getAllWithPagination(@PathVariable int pageIndex){
+    @GetMapping("/pagination")
+    public ResponseEntity<List<BookDto>> getAllWithPagination(
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "5") int size){
         List<BookDto> books = new ArrayList<>();
-        bookService.findAllWithPagination(pageIndex).forEach(book -> books.add(INSTANCE.bookToDto(book)));
+        bookService.findAllWithPagination(PageRequest.of(page, size)).forEach(book -> books.add(INSTANCE.bookToDto(book)));
         return ok(books);
     }
 

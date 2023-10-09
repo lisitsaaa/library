@@ -6,6 +6,7 @@ import com.example.library.exception.NotFoundException;
 import com.example.library.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -65,8 +66,8 @@ public class BookService {
     }
 
     @Transactional(readOnly = true)
-    public List<Book> findAllWithPagination(int pageIndex){
-        return checkForPresenceOfBooks(bookRepository.findAllWithPagination(pageIndex));
+    public List<Book> findAllWithPagination(PageRequest pageRequest) {
+        return checkForPresenceOfBooks(bookRepository.findAll(pageRequest).getContent());
     }
 
     private List<Book> checkForPresenceOfBooks(List<Book> books){
