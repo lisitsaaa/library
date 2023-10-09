@@ -41,6 +41,16 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
+    public User saveUser(User user){
+        user.setUsername(String.format("%s%s%s", user.getName(), user.getSurname(), user.getParentName()));
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+            throw new ExistsException(String.format(USER_EXISTED_MESSAGE, user.getUsername()));
+        }
+        user.setRoles(Set.of(Role.READER));
+        user.setPassword(passwordEncoder().encode(user.getUsername()));
+        return save(user);
+    }
+
     public User login(User user){
         User userFromBase = findByUsername(user.getUsername());
         if (passwordEncoder().matches(user.getPassword(), userFromBase.getPassword())) {

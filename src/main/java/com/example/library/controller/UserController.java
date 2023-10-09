@@ -3,6 +3,7 @@ package com.example.library.controller;
 import com.example.library.configuration.security.jwt.JWTTokenProvider;
 import com.example.library.dto.AdminDto;
 import com.example.library.dto.AuthAdminDto;
+import com.example.library.dto.UserDto;
 import com.example.library.entity.user.User;
 import com.example.library.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -39,5 +40,12 @@ public class UserController {
         checkBindingResult(bindingResult);
         User user = userService.login(INSTANCE.authDtoToAdmin(userDto));
         return ok(jwtTokenProvider.generateToken(user.getUsername(), user.getRoles()));
+    }
+
+    @PostMapping("/add-user")
+    public ResponseEntity<UserDto> addUser(@RequestBody @Valid UserDto userDto,
+                                           BindingResult bindingResult){
+        checkBindingResult(bindingResult);
+        return ok(INSTANCE.userToDto(userService.saveUser(INSTANCE.dtoToUser(userDto))));
     }
 }
