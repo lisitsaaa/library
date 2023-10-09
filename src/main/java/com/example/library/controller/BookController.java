@@ -61,6 +61,13 @@ public class BookController {
         return ok(books);
     }
 
+    @GetMapping("/pagination/{pageIndex}")
+    public ResponseEntity<List<BookDto>> getAllWithPagination(@PathVariable int pageIndex){
+        List<BookDto> books = new ArrayList<>();
+        bookService.findAllWithPagination(pageIndex).forEach(book -> books.add(INSTANCE.bookToDto(book)));
+        return ok(books);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<BookDto> updateInfo(@RequestBody @Valid UpdatedBookDto bookDto,
                                           BindingResult bindingResult,

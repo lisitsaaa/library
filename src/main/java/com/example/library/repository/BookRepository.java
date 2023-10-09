@@ -18,6 +18,9 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     @Query("SELECT b FROM Book b where b.bookStatus='INSIDE'")
     List<Book> findAllByBookStatusInside();
 
+    @Query(value = "SELECT b FROM Book b ORDER BY b.id limit 2 offset :pageIndex", nativeQuery = true)
+    List<Book> findAllWithPagination(@Param("pageIndex") int pageIndex);
+
     @Modifying
     @Query("UPDATE Book b SET b.bookStatus=:bookStatus WHERE b.id=:id")
     void updateBookStatus(@Param("bookStatus") BookStatus bookStatus,

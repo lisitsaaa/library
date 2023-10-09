@@ -64,6 +64,11 @@ public class BookService {
         return checkForPresenceOfBooks(bookRepository.findAll());
     }
 
+    @Transactional(readOnly = true)
+    public List<Book> findAllWithPagination(int pageIndex){
+        return checkForPresenceOfBooks(bookRepository.findAllWithPagination(pageIndex));
+    }
+
     private List<Book> checkForPresenceOfBooks(List<Book> books){
         if (CollectionUtils.isEmpty(books)) {
             throw new NotFoundException(NOT_FOUND_MESSAGE);
