@@ -31,7 +31,7 @@ public class BookController {
     @Autowired
     private AuthorService authorService;
 
-    @PostMapping()
+    @PostMapping("/admin")
     public ResponseEntity<BookDto> create(@RequestBody @Valid BookDto bookDto,
                                           BindingResult bindingResult){
         checkBindingResult(bindingResult);
@@ -71,7 +71,7 @@ public class BookController {
         return ok(books);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/admin/{id}")
     public ResponseEntity<BookDto> updateInfo(@RequestBody @Valid UpdatedBookDto bookDto,
                                           BindingResult bindingResult,
                                           @PathVariable long id){
@@ -89,7 +89,7 @@ public class BookController {
         return oldBook;
     }
 
-    @PutMapping("/update-book-status/{id}")
+    @PutMapping("/admin/update-book-status/{id}")
     public ResponseEntity<BookDto> updateBookStatus(@RequestBody @Valid BookStatusDto bookStatusDto,
                                                     BindingResult bindingResult,
                                                     @PathVariable long id){
@@ -100,12 +100,12 @@ public class BookController {
         return ok(INSTANCE.bookToDto(oldBook));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/{id}")
     public void remove(@PathVariable long id){
         bookService.remove(id);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/admin/{id}")
     public ResponseEntity<BookDto> getById(@PathVariable long id){
         return ok(INSTANCE.bookToDto(bookService.findById(id)));
     }

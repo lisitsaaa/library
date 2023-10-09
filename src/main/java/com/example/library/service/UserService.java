@@ -41,14 +41,14 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
-    public User saveUser(User user){
-        user.setUsername(String.format("%s%s%s", user.getName(), user.getSurname(), user.getParentName()));
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-            throw new ExistsException(String.format(USER_EXISTED_MESSAGE, user.getUsername()));
+    public User saveUser(User reader){
+        reader.setUsername(String.format("%s%s%s", reader.getName(), reader.getSurname(), reader.getParentName()));
+        if (userRepository.findByUsername(reader.getUsername()).isPresent()) {
+            throw new ExistsException(String.format(USER_EXISTED_MESSAGE, reader.getUsername()));
         }
-        user.setRoles(Set.of(Role.READER));
-        user.setPassword(passwordEncoder().encode(user.getUsername()));
-        return save(user);
+        reader.setRoles(Set.of(Role.READER));
+        reader.setPassword(passwordEncoder().encode(reader.getUsername()));
+        return save(reader);
     }
 
     public User login(User user){
@@ -57,6 +57,11 @@ public class UserService implements UserDetailsService {
             return userFromBase;
         }
         throw new NotFoundException(NOT_FOUND_MESSAGE);
+    }
+
+    @Transactional(readOnly = true)
+    public User findByNameAndSurnameAndParentName(String name, String surname, String parentName){
+        return checkUser(userRepository.findByNameAndSurnameAndParentName(name, surname, parentName));
     }
 
     @Transactional(readOnly = true)

@@ -42,7 +42,7 @@ public class UserController {
         return ok(jwtTokenProvider.generateToken(user.getUsername(), user.getRoles()));
     }
 
-    @PostMapping("/add-user")
+    @PostMapping("/admin/add-user")
     public ResponseEntity<UserDto> addUser(@RequestBody @Valid UserDto userDto,
                                            BindingResult bindingResult){
         checkBindingResult(bindingResult);
