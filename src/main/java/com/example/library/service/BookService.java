@@ -1,10 +1,12 @@
 package com.example.library.service;
 
 import com.example.library.entity.library.book.Book;
+import com.example.library.exception.ExistsException;
 import com.example.library.exception.NotFoundException;
 import com.example.library.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -17,11 +19,17 @@ import java.util.Optional;
 public class BookService {
     @Value("Not found")
     private String NOT_FOUND_MESSAGE;
+    @Value("Book with ISBN - %s already existed")
+    private String EXISTED_MESSAGE;
 
     @Autowired
     private BookRepository bookRepository;
 
     public Book save(Book book) {
+        Optional<Book> byISBN = bookRepository.findByISBN(book.getISBN());
+        if (byISBN.isPresent()) {
+            throw new ExistsException(String.format(EXISTED_MESSAGE, book.getISBN()));
+        }
         return bookRepository.save(book);
     }
 
@@ -38,8 +46,8 @@ public class BookService {
     }
 
     @Transactional(readOnly = true)
-    public List<Book> findAllInsideBooks(){
-        return checkForPresenceOfBooks(bookRepository.findAllByBookStatusOutside());
+    public List<Book> findInsideBooks(){
+        return checkForPresenceOfBooks(bookRepository.findAllByBookStatusInside());
     }
 
     @Transactional(readOnly = true)
@@ -55,6 +63,11 @@ public class BookService {
     @Transactional(readOnly = true)
     public List<Book> findAll() {
         return checkForPresenceOfBooks(bookRepository.findAll());
+    }
+
+    @Transactional(readOnly = true)
+    public List<Book> findAllWithPagination(PageRequest pageRequest) {
+        return checkForPresenceOfBooks(bookRepository.findAll(pageRequest).getContent());
     }
 
     private List<Book> checkForPresenceOfBooks(List<Book> books){

@@ -5,10 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor @AllArgsConstructor
-public class UserDto {
-    private String name;
-    private String surname;
-    private String parentName;
+@AllArgsConstructor @NoArgsConstructor
+public class AuthAdminDto {
     private String username;
+    private String password;
 }

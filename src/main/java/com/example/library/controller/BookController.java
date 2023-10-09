@@ -9,6 +9,7 @@ import com.example.library.entity.library.book.Book;
 import com.example.library.service.AuthorService;
 import com.example.library.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
@@ -30,7 +31,7 @@ public class BookController {
     @Autowired
     private AuthorService authorService;
 
-    @PostMapping()
+    @PostMapping("/admin")
     public ResponseEntity<BookDto> create(@RequestBody @Valid BookDto bookDto,
                                           BindingResult bindingResult){
         checkBindingResult(bindingResult);
@@ -54,7 +55,23 @@ public class BookController {
         return ok(books);
     }
 
-    @PutMapping("/{id}")
+    @GetMapping("/inside")
+    public ResponseEntity<List<BookDto>> getInsideBook(){
+        List<BookDto> books = new ArrayList<>();
+        bookService.findInsideBooks().forEach(book -> books.add(INSTANCE.bookToDto(book)));
+        return ok(books);
+    }
+
+    @GetMapping("/pagination")
+    public ResponseEntity<List<BookDto>> getAllWithPagination(
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "5") int size){
+        List<BookDto> books = new ArrayList<>();
+        bookService.findAllWithPagination(PageRequest.of(page, size)).forEach(book -> books.add(INSTANCE.bookToDto(book)));
+        return ok(books);
+    }
+
+    @PutMapping("/admin/{id}")
     public ResponseEntity<BookDto> updateInfo(@RequestBody @Valid UpdatedBookDto bookDto,
                                           BindingResult bindingResult,
                                           @PathVariable long id){
@@ -72,7 +89,7 @@ public class BookController {
         return oldBook;
     }
 
-    @PutMapping("/update-book-status/{id}")
+    @PutMapping("/admin/update-book-status/{id}")
     public ResponseEntity<BookDto> updateBookStatus(@RequestBody @Valid BookStatusDto bookStatusDto,
                                                     BindingResult bindingResult,
                                                     @PathVariable long id){
@@ -83,12 +100,12 @@ public class BookController {
         return ok(INSTANCE.bookToDto(oldBook));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/{id}")
     public void remove(@PathVariable long id){
         bookService.remove(id);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/admin/{id}")
     public ResponseEntity<BookDto> getById(@PathVariable long id){
         return ok(INSTANCE.bookToDto(bookService.findById(id)));
     }
