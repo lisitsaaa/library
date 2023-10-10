@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table
+@Table(name = "authors")
 @Setter @Getter
 @Builder @NoArgsConstructor @AllArgsConstructor
 public class Author extends AbstractEntity {
