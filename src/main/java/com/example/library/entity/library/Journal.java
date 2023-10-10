@@ -13,7 +13,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Table
 @Setter @Getter
 @Builder @NoArgsConstructor @AllArgsConstructor
 public class Journal extends AbstractEntity {
