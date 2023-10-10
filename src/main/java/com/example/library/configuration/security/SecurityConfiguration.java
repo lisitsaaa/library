@@ -4,8 +4,10 @@ import com.example.library.configuration.security.jwt.JWTTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -24,7 +26,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private static final String ADMIN_ENDPOINT = "/**/admin/**";
     private static final String ROLE_ADMIN = "ADMIN";
     private static final String SWAGGER_ENDPOINT = "/swagger-ui/**";
+    private static final String VERSION_ENDPOINT = "/v3/api-docs/**";
     private static final String OPEN_API_ENDPOINT = "/javainuse-openapi/**";
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers(SWAGGER_ENDPOINT, VERSION_ENDPOINT, OPEN_API_ENDPOINT);
+         }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -37,7 +45,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(LOGIN_ENDPOINT).permitAll()
                 .antMatchers(REG_ENDPOINT).permitAll()
                 .antMatchers(ADMIN_ENDPOINT).hasAuthority(ROLE_ADMIN)
-                .antMatchers(SWAGGER_ENDPOINT, OPEN_API_ENDPOINT).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
