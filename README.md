@@ -1,4 +1,4 @@
-# LIBRARY API
+LIBRARY API
 
 ## Technology stack:
 - Java 17
