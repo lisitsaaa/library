@@ -1,10 +1,9 @@
 package com.example.library.configuration.security;
 
-import com.example.library.configuration.security.jwt.JWTTokenFilter;
+import com.example.library.configuration.security.jwt.JwtTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -19,7 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-    private final JWTTokenFilter jwtTokenFilter;
+    private final JwtTokenFilter jwtTokenFilter;
 
     private static final String LOGIN_ENDPOINT = "/api/user/auth/**";
     private static final String REG_ENDPOINT = "/api/user";

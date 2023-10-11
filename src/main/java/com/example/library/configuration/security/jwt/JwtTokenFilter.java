@@ -15,9 +15,9 @@ import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
-public class JWTTokenFilter extends GenericFilterBean {
+public class JwtTokenFilter extends GenericFilterBean {
 
-    private final JWTTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
