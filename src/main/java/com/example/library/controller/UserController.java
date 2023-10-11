@@ -1,13 +1,10 @@
 package com.example.library.controller;
 
-import com.example.library.configuration.security.jwt.JwtTokenProvider;
-import com.example.library.dto.AdminDto;
-import com.example.library.dto.AuthAdminDto;
-import com.example.library.dto.UserDto;
-import com.example.library.entity.user.User;
-import com.example.library.service.UserService;
+import com.example.library.dto.user.AuthDto;
+import com.example.library.dto.user.TokenDto;
+import com.example.library.dto.user.UserDto;
+import com.example.library.wrapper.UserWrapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,36 +13,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-import static com.example.library.controller.util.Validator.checkBindingResult;
-import static com.example.library.mapper.UserMapper.INSTANCE;
-import static org.springframework.http.ResponseEntity.ok;
-
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserController {
-    private final UserService userService;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final UserWrapper userWrapper;
 
     @PostMapping()
-    public ResponseEntity<AdminDto> registration(@RequestBody @Valid AdminDto userDto,
-                                                 BindingResult bindingResult) {
-        checkBindingResult(bindingResult);
-        return ok(INSTANCE.adminToDto(userService.save(INSTANCE.dtoToAdmin(userDto))));
+    public UserDto registration(@RequestBody @Valid UserDto userDto,
+                                BindingResult bindingResult) {
+        return userWrapper.save(userDto, bindingResult);
     }
 
     @PostMapping("/auth")
-    public ResponseEntity<String> authorization(@RequestBody @Valid AuthAdminDto userDto,
-                                BindingResult bindingResult){
-        checkBindingResult(bindingResult);
-        User user = userService.login(INSTANCE.authDtoToAdmin(userDto));
-        return ok(jwtTokenProvider.generateToken(user.getUsername(), user.getRoles()));
-    }
-
-    @PostMapping("/admin/add-user")
-    public ResponseEntity<UserDto> addUser(@RequestBody @Valid UserDto userDto,
-                                           BindingResult bindingResult){
-        checkBindingResult(bindingResult);
-        return ok(INSTANCE.userToDto(userService.saveUser(INSTANCE.dtoToUser(userDto))));
+    public TokenDto authorization(@RequestBody @Valid AuthDto authDto,
+                                  BindingResult bindingResult) {
+        return userWrapper.login(authDto, bindingResult);
     }
 }

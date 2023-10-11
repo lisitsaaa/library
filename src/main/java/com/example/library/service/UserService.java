@@ -13,9 +13,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 
 import java.util.Optional;
 import java.util.Set;
+
+import static com.example.library.controller.util.Validator.checkBindingResult;
 
 @Service
 @Transactional
@@ -23,13 +26,16 @@ import java.util.Set;
 public class UserService implements UserDetailsService {
     @Value("${NOT_FOUND}") private String not_found_message;
     @Value("${EXISTED}") private String existed_message;
+
     private final UserRepository userRepository;
 
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    public User save(User user){
+    public User save(User user, BindingResult bindingResult) {
+        checkBindingResult(bindingResult);
+
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             throw new ExistsException(String.format(existed_message, user.getUsername()));
         }
@@ -38,18 +44,10 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
-    public User saveUser(User reader){
-        reader.setUsername(String.format("%s%s%s", reader.getName(), reader.getSurname(), reader.getParentName()));
-        if (userRepository.findByUsername(reader.getUsername()).isPresent()) {
-            throw new ExistsException(String.format(existed_message, reader.getUsername()));
-        }
-        reader.setRoles(Set.of(Role.READER));
-        reader.setPassword(passwordEncoder().encode(reader.getUsername()));
-        return save(reader);
-    }
-
-    public User login(User user){
+    public User login(User user, BindingResult bindingResult) {
+        checkBindingResult(bindingResult);
         User userFromBase = findByUsername(user.getUsername());
+
         if (passwordEncoder().matches(user.getPassword(), userFromBase.getPassword())) {
             return userFromBase;
         }
@@ -57,13 +55,15 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional(readOnly = true)
-    public User findByNameAndSurnameAndParentName(String name, String surname, String parentName){
-        return checkUser(userRepository.findByNameAndSurnameAndParentName(name, surname, parentName));
+    public User findByUsername(String username) {
+        return checkUser(userRepository.findByUsername(username));
     }
 
-    @Transactional(readOnly = true)
-    public User findByUsername(String username){
-        return checkUser(userRepository.findByUsername(username));
+    private User checkUser(Optional<User> user) {
+        if (user.isEmpty()) {
+            throw new NotFoundException(not_found_message);
+        }
+        return user.get();
     }
 
     @Override
@@ -71,13 +71,6 @@ public class UserService implements UserDetailsService {
         Optional<User> user = userRepository.findByUsername(username);
         if (user.isEmpty()) {
             throw new UsernameNotFoundException(not_found_message);
-        }
-        return user.get();
-    }
-
-    private User checkUser(Optional<User> user){
-        if (user.isEmpty()) {
-            throw new NotFoundException(not_found_message);
         }
         return user.get();
     }
