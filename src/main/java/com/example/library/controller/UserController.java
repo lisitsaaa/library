@@ -1,6 +1,6 @@
 package com.example.library.controller;
 
-import com.example.library.configuration.security.jwt.JWTTokenProvider;
+import com.example.library.configuration.security.jwt.JwtTokenProvider;
 import com.example.library.dto.AdminDto;
 import com.example.library.dto.AuthAdminDto;
 import com.example.library.dto.UserDto;
@@ -25,7 +25,7 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    private final JWTTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping()
     public ResponseEntity<AdminDto> registration(@RequestBody @Valid AdminDto userDto,
