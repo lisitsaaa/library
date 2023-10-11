@@ -4,6 +4,7 @@ import com.example.library.entity.library.book.Book;
 import com.example.library.exception.ExistsException;
 import com.example.library.exception.NotFoundException;
 import com.example.library.repository.BookRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -16,14 +17,14 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class BookService {
     @Value("Not found")
     private String NOT_FOUND_MESSAGE;
     @Value("Book with ISBN - %s already existed")
     private String EXISTED_MESSAGE;
 
-    @Autowired
-    private BookRepository bookRepository;
+    private final BookRepository bookRepository;
 
     public Book save(Book book) {
         Optional<Book> byISBN = bookRepository.findByISBN(book.getISBN());

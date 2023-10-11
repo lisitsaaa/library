@@ -2,6 +2,7 @@ package com.example.library.service;
 
 import com.example.library.entity.library.Journal;
 import com.example.library.repository.JournalRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -12,9 +13,9 @@ import java.util.List;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class JournalService {
-    @Autowired
-    private JournalRepository journalRepository;
+    private final JournalRepository journalRepository;
 
     public Journal save(Journal journal) {
         journal.setDateOfGetBook(LocalDate.now());
