@@ -5,9 +5,8 @@ import com.example.library.entity.library.book.Book;
 import lombok.*;
 
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity
 @Setter @Getter
@@ -16,6 +15,6 @@ public class Journal extends AbstractEntity {
     private LocalDate dateOfGetBook;
     private LocalDate dateOfReturnBook;
 
-    @OneToMany
-    private List<Book> book;
+    @OneToOne
+    private Book book;
 }
