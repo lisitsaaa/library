@@ -2,8 +2,8 @@ package com.example.library.configuration.security.jwt;
 
 import javax.naming.AuthenticationException;
 
-public class JWTAuthenticationException extends AuthenticationException {
-  public JWTAuthenticationException(String msg) {
+public class JwtAuthenticationException extends AuthenticationException {
+  public JwtAuthenticationException(String msg) {
     super(msg);
   }
 }
