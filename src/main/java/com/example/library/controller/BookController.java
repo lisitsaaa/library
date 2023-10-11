@@ -8,6 +8,7 @@ import com.example.library.entity.library.book.Author;
 import com.example.library.entity.library.book.Book;
 import com.example.library.service.AuthorService;
 import com.example.library.service.BookService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -25,11 +26,10 @@ import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping("/api/book")
+@RequiredArgsConstructor
 public class BookController {
-    @Autowired
-    private BookService bookService;
-    @Autowired
-    private AuthorService authorService;
+    private final BookService bookService;
+    private final AuthorService authorService;
 
     @PostMapping("/admin")
     public ResponseEntity<BookDto> create(@RequestBody @Valid BookDto bookDto,

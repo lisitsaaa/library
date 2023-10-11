@@ -5,6 +5,7 @@ import com.example.library.entity.user.User;
 import com.example.library.exception.ExistsException;
 import com.example.library.exception.NotFoundException;
 import com.example.library.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,14 +20,14 @@ import java.util.Set;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class UserService implements UserDetailsService {
     @Value("Not found")
     private String NOT_FOUND_MESSAGE;
     @Value("User with username - %s already existed")
     private String USER_EXISTED_MESSAGE;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
