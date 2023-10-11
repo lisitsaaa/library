@@ -4,7 +4,6 @@ import com.example.library.dto.book.BookDto;
 import com.example.library.dto.book.BookListDto;
 import com.example.library.dto.book.UpdatedBookDto;
 import com.example.library.entity.library.book.BookStatus;
-import com.example.library.service.BookService;
 import com.example.library.wrapper.BookWrapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -17,10 +16,9 @@ import javax.validation.Valid;
 @RequestMapping("/api/book")
 @RequiredArgsConstructor
 public class BookController {
-    private final BookService bookService;
     private final BookWrapper bookWrapper;
 
-    @PostMapping("/admin")
+    @PostMapping()
     public BookDto create(@RequestBody @Valid BookDto bookDto,
                                           BindingResult bindingResult){
         return bookWrapper.save(bookDto, bindingResult);
