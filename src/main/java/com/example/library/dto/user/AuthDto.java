@@ -1,4 +1,4 @@
-package com.example.library.dto;
+package com.example.library.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,11 +11,11 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @AllArgsConstructor @NoArgsConstructor
-public class AuthAdminDto {
+public class AuthDto {
     @NotNull @NotBlank @NotEmpty
     private String username;
 
     @NotNull @NotBlank @NotEmpty
-    @Length(min = 6, max = 16)
+    @Length(min = 2, max = 16)
     private String password;
 }
