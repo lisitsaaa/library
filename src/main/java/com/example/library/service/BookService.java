@@ -5,7 +5,6 @@ import com.example.library.exception.ExistsException;
 import com.example.library.exception.NotFoundException;
 import com.example.library.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -19,17 +18,14 @@ import java.util.Optional;
 @Transactional
 @RequiredArgsConstructor
 public class BookService {
-    @Value("Not found")
-    private String NOT_FOUND_MESSAGE;
-    @Value("Book with ISBN - %s already existed")
-    private String EXISTED_MESSAGE;
-
+    @Value("${NOT_FOUND}") private String not_found_message;
+    @Value("${EXISTED}") private String existed_message;
     private final BookRepository bookRepository;
 
     public Book save(Book book) {
         Optional<Book> byISBN = bookRepository.findByISBN(book.getISBN());
         if (byISBN.isPresent()) {
-            throw new ExistsException(String.format(EXISTED_MESSAGE, book.getISBN()));
+            throw new ExistsException(String.format(existed_message, book.getISBN()));
         }
         return bookRepository.save(book);
     }
@@ -73,7 +69,7 @@ public class BookService {
 
     private List<Book> checkForPresenceOfBooks(List<Book> books){
         if (CollectionUtils.isEmpty(books)) {
-            throw new NotFoundException(NOT_FOUND_MESSAGE);
+            throw new NotFoundException(not_found_message);
         }
         return books;
     }
@@ -82,6 +78,6 @@ public class BookService {
         if (book.isPresent()) {
             return book.get();
         }
-        throw new NotFoundException(NOT_FOUND_MESSAGE);
+        throw new NotFoundException(not_found_message);
     }
 }
