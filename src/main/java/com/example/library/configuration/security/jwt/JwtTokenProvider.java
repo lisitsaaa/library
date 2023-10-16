@@ -2,8 +2,7 @@ package com.example.library.configuration.security.jwt;
 
 import com.example.library.entity.user.Role;
 import io.jsonwebtoken.*;
-import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,6 +17,7 @@ import java.util.*;
 
 
 @Component
+@RequiredArgsConstructor
 public class JwtTokenProvider {
     @Value("roles") private String roles_key;
 
@@ -27,10 +27,9 @@ public class JwtTokenProvider {
 
     @Value("${jwt.token.expired}") private long jwtExpirationInMs;
 
-    private static final String TOKEN_PREFIX = "Bearer";
+    private static final String TOKEN_PREFIX = "Bearer ";
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
     @PostConstruct
     protected void init() {
