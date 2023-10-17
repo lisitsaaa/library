@@ -1,17 +1,16 @@
-version: 3.8
-
+version: "3.8"
 services:
   app:
     build:
       context: .
-      dockerfile: DockerFile
+      dockerfile: Dockerfile
     restart: always
     ports:
       - "8080:8080"
-    entrypoint: jdbc:postgresql://localhost:5432/library_db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
     depends_on:
       - postgres
-
 
   postgres:
     image: postgres:latest
@@ -19,9 +18,9 @@ services:
     ports:
       - "5433:5432"
     environment:
-      - POSTGRES_USER:postgres
-      - POSTGRES_DB:postgres
-      - POSTGRES_PASSWORD:root
+       POSTGRES_USER: postgres
+       POSTGRES_DB: postgres
+       POSTGRES_PASSWORD: root
     volumes:
       - "pg-data:/var/postgresql/data"
 
