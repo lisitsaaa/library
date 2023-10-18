@@ -21,5 +21,5 @@
 - docker-compose build
 - docker-compose up -d
 - docker-compose ps
-- Mysql access port: 5433, Web port: 8080
+- Postgres access port: 5433, Web port: 8080
 - Swagger: http://localhost:8080/swagger-ui/index.html
